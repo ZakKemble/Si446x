@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+		<title>Si4463 WUT Calculator</title>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script type="text/javascript">
+			function wutCalc()
+			{
+				var secs = parseFloat($("#wutcalc_secs").val());
+				var r = 1;
+				var m = 1;
+				var res = 0;
+				var code = "-";
+
+				for(;r<=20;r++)
+				{
+					var tmp = 65535 * ((4 * Math.pow(2, r)) / 32768);
+					if(tmp >= secs)
+					{
+						res = tmp / 65535;
+						m = Math.ceil(secs / res);
+						break;
+					}
+				}
+				
+				var realsecs;
+				if(r <= 20)
+				{
+					realsecs = m * ((4 * Math.pow(2, r)) / 32768);
+					code = "Si446x_setupWUT(" + r + ", " + m + ", 0, SI446X_WUT_RUN);";
+				}
+				else
+				{
+					r = "-";
+					m = "-";
+					res = "-";
+					realsecs = "Interval too high";
+				}
+
+				$("#wutcalc_r").val(r);
+				$("#wutcalc_m").val(m);
+				$("#wutcalc_res").val(res);
+				$("#wutcalc_realsecs").val(realsecs);
+				$("#wutcalc_code").text(code);
+			}
+
+			$(function() {
+				wutCalc();
+				$("#wutcalc_secs").on("input", wutCalc);
+				$("#wutcalc_submit").click(wutCalc);
+			});
+		</script>
+	</head>
+	<body>
+
+		<style>
+			html {
+				background-color:#f7f7f7;
+				font-family:Verdana, Geneva, sans-serif;
+				color:#1b1b1b;
+			}
+		</style>
+
+		<center>
+			<h1>Si4463 WUT Calculator</h1>
+	
+			<table>
+				<tbody>
+					<tr>
+						<td style="width:180px">Interval (seconds)</td><td style="width:220px"><input style="width:98%" id="wutcalc_secs" /></td>
+					</tr>
+					<tr>
+						<td>R</td><td><input style="width:98%" id="wutcalc_r" readonly="readonly" /></td>
+					</tr>
+					<tr>
+						<td>M</td><td><input style="width:98%" id="wutcalc_m" readonly="readonly" /></td>
+					</tr>
+					<tr>
+						<td>Resolution</td><td><input style="width:98%" id="wutcalc_res" readonly="readonly" /></td>
+					</tr>
+					<tr>
+						<td>Actual interval</td><td><input style="width:98%" id="wutcalc_realsecs" readonly="readonly" /></td>
+					</tr>
+					<tr>
+						<td colspan="2"><pre id="wutcalc_code">-</pre></td>
+					</tr>
+					<tr>
+						<td colspan="2"><button id="wutcalc_submit">Submit</button></td>
+					</tr>
+				</tbody>
+			</table>
+		</center>
+
+	</body>
+</html>
