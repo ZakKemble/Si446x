@@ -54,6 +54,8 @@ void setup()
 {
 	Serial.begin(115200);
 
+	pinMode(A5, OUTPUT); // LED
+
 	// Start up
 	Si446x_init();
 	Si446x_setTxPower(SI446X_MAX_TX_POWER);
@@ -94,7 +96,9 @@ void loop()
 		Serial.println(F("Reply sent"));
 
 		// Toggle LED
-		PORTC ^= _BV(PORTC5);
+		static uint8_t ledState;
+		digitalWrite(A5, ledState ? HIGH : LOW);
+		ledState = !ledState;
 
 		Serial.print(F("Signal strength: "));
 		Serial.print(pingInfo.rssi);

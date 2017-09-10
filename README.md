@@ -1,5 +1,5 @@
 Si4463 Radio Library for AVR and Arduino
-=======================================
+========================================
 
 This is a library for use with the [Si4463 radio IC from Silicon Labs](http://www.silabs.com/products/wireless/EZRadioPRO/Pages/si446x.aspx). The Si4463 is used in a number of pre-made modules like the [HopeRF RFM26W](http://www.hoperf.com/rf_transceiver/modules/RFM26W.html) and [Dorji_Com DRF4463F](https://www.tindie.com/products/DORJI_COM/433mhz-wireless-rf-si4463-transceiver-module/). The whole range of Si446x transceivers should also work with this library.
 

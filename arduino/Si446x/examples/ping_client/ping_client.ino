@@ -58,6 +58,8 @@ void setup()
 {
 	Serial.begin(115200);
 
+	pinMode(A5, OUTPUT); // LED
+
 	// Start up
 	Si446x_init();
 	Si446x_setTxPower(SI446X_MAX_TX_POWER);
@@ -118,8 +120,11 @@ void loop()
 	{
 		// If success toggle LED and send ping time over UART
 		uint16_t totalTime = pingInfo.timestamp - startTime;
-		PORTC ^= _BV(PORTC5);
-			
+
+		static uint8_t ledState;
+		digitalWrite(A5, ledState ? HIGH : LOW);
+		ledState = !ledState;
+
 		replies++;
 
 		Serial.print(F("Ping time: "));

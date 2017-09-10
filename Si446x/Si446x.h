@@ -363,7 +363,7 @@ void Si446x_RX(uint8_t channel);
 /**
 * @brief Set the low battery voltage alarm
 *
-* The ::SI44653_CB_LOWBATT() callback will be ran when the supply voltage drops below this value. The WUT must be configured with ::Si446x_setupWUT() to enable periodically checking the battery level.
+* The ::SI446X_CB_LOWBATT() callback will be ran when the supply voltage drops below this value. The WUT must be configured with ::Si446x_setupWUT() to enable periodically checking the battery level.
 *
 * @param [voltage] The low battery threshold in millivolts (1050 - 3050).
 * @return (none)
@@ -377,7 +377,7 @@ void Si446x_setLowBatt(uint16_t voltage);
 *\n
 * The Wake Up Timer (WUT) can be used to periodically run a number of features:\n
 * ::SI446X_WUT_RUN Simply wake up the microcontroller when the WUT expires and run the ::SI446X_CB_WUT() callback.\n
-* ::SI446X_WUT_BATT Check battery voltage - If the battery voltage is below the threshold set by ::Si446x_setLowBatt() then wake up the microcontroller and run the ::SI44653_CB_LOWBATT() callback.\n
+* ::SI446X_WUT_BATT Check battery voltage - If the battery voltage is below the threshold set by ::Si446x_setLowBatt() then wake up the microcontroller and run the ::SI446X_CB_LOWBATT() callback.\n
 * ::SI446X_WUT_RX Enter receive mode for a length of time determinded by the ldc and r parameters (NOT SUPPORTED YET! dont use this option)\n
 *\n
 * For more info see the GLOBAL_WUT_M, GLOBAL_WUT_R and GLOBAL_WUT_LDC properties in the Si446x API docs.\n

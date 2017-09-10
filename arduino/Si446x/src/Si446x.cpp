@@ -518,8 +518,8 @@ void Si446x_init()
 	interrupt(NULL);
 	Si446x_sleep();
 
-	enabledInterrupts[IRQ_PACKET] = _BV(SI446X_PACKET_RX_PEND) | _BV(SI446X_CRC_ERROR_PEND);
-	//enabledInterrupts[IRQ_MODEM] = _BV(SI446X_SYNC_DETECT_PEND);
+	enabledInterrupts[IRQ_PACKET] = (1<<SI446X_PACKET_RX_PEND) | (1<<SI446X_CRC_ERROR_PEND);
+	//enabledInterrupts[IRQ_MODEM] = (1<<SI446X_SYNC_DETECT_PEND);
 
 #ifndef ARDUINO
 	// TODO Interrupt should trigger on low level, not falling edge?
@@ -638,7 +638,7 @@ void Si446x_setupWUT(uint8_t r, uint16_t m, uint8_t ldc, uint8_t config)
 
 		// Setup WUT interrupts
 		uint8_t intChip = 0;//getProperty(SI446X_INT_CTL_CHIP_ENABLE); // No other CHIP interrupts are enabled so dont bother reading the current state
-		//intChip &= ~(_BV(SI446X_INT_CTL_CHIP_LOW_BATT_EN)|_BV(SI446X_INT_CTL_CHIP_WUT_EN));
+		//intChip &= ~((1<<SI446X_INT_CTL_CHIP_LOW_BATT_EN)|(1<<SI446X_INT_CTL_CHIP_WUT_EN));
 		intChip |= doBatt<<SI446X_INT_CTL_CHIP_LOW_BATT_EN;
 		intChip |= doRun<<SI446X_INT_CTL_CHIP_WUT_EN;
 		enabledInterrupts[IRQ_CHIP] = intChip;
@@ -655,10 +655,10 @@ void Si446x_setupWUT(uint8_t r, uint16_t m, uint8_t ldc, uint8_t config)
 		uint8_t properties[5];
 		properties[0] = doRx ? SI446X_GLOBAL_WUT_CONFIG_WUT_LDC_EN_RX : 0;
 		properties[0] |= doBatt<<SI446X_GLOBAL_WUT_CONFIG_WUT_LBD_EN;
-		properties[0] |= _BV(SI446X_GLOBAL_WUT_CONFIG_WUT_EN);
+		properties[0] |= (1<<SI446X_GLOBAL_WUT_CONFIG_WUT_EN);
 		properties[1] = m>>8;
 		properties[2] = m;
-		properties[3] = r | SI446X_LDC_MAX_PERIODS_TWO | _BV(SI446X_WUT_SLEEP);
+		properties[3] = r | SI446X_LDC_MAX_PERIODS_TWO | (1<<SI446X_WUT_SLEEP);
 		properties[4] = ldc;
 		setProperties(SI446X_GLOBAL_WUT_CONFIG, properties, sizeof(properties));
 	}
@@ -953,7 +953,7 @@ ISR(INT_VECTOR)
 	interrupts[6] &= enabledInterrupts[IRQ_CHIP];
 
 	// Valid PREAMBLE and SYNC, packet data now begins
-	if(interrupts[4] & _BV(SI446X_SYNC_DETECT_PEND))
+	if(interrupts[4] & (1<<SI446X_SYNC_DETECT_PEND))
 	{
 		//fix_invalidSync_irq(1);
 //		Si446x_setupCallback(SI446X_CBS_INVALIDSYNC, 1); // Enable INVALID_SYNC when a new packet starts, sometimes a corrupted packet will mess the radio up
@@ -961,7 +961,7 @@ ISR(INT_VECTOR)
 	}
 /*
 	// Disable INVALID_SYNC
-	if((interrupts[4] & _BV(SI446X_INVALID_SYNC_PEND)) || (interrupts[2] & (_BV(SI446X_PACKET_SENT_PEND)|_BV(SI446X_CRC_ERROR_PEND))))
+	if((interrupts[4] & (1<<SI446X_INVALID_SYNC_PEND)) || (interrupts[2] & ((1<<SI446X_PACKET_SENT_PEND)|(1<<SI446X_CRC_ERROR_PEND))))
 	{
 		//fix_invalidSync_irq(0);
 		Si446x_setupCallback(SI446X_CBS_INVALIDSYNC, 0);
@@ -969,23 +969,23 @@ ISR(INT_VECTOR)
 */
 
 	// INVALID_SYNC detected, sometimes the radio gets messed up in this state and requires a RX restart
-//	if(interrupts[4] & _BV(SI446X_INVALID_SYNC_PEND))
+//	if(interrupts[4] & (1<<SI446X_INVALID_SYNC_PEND))
 //		SI446X_CB_RXINVALIDSYNC();
 
 #if SI446X_ENABLE_ADDRMATCHING
 	// Address match success
 	// NOTE: This will still be called even if the packet failed the CRC
-	if(interrupts[2] & _BV(SI446X_FILTER_MATCH_PEND))
+	if(interrupts[2] & (1<<SI446X_FILTER_MATCH_PEND))
 		SI446X_CB_ADDRMATCH();
 
 	// Address match missed
 	// NOTE: This will still be called even if the packet failed the CRC
-	if(interrupts[2] & _BV(SI446X_FILTER_MISS_PEND))
+	if(interrupts[2] & (1<<SI446X_FILTER_MISS_PEND))
 		SI446X_CB_ADDRMISS();
 #endif
 
 	// Valid packet
-	if(interrupts[2] & _BV(SI446X_PACKET_RX_PEND))
+	if(interrupts[2] & (1<<SI446X_PACKET_RX_PEND))
 	{
 		uint8_t len = 0;
 		Si446x_read(&len, 1);
@@ -995,7 +995,7 @@ ISR(INT_VECTOR)
 	// Corrupted packet
 	// NOTE: This will still be called even if the address did not match, but the packet failed the CRC
 	// This will not be called if the address missed, but the packet passed CRC
-	if(interrupts[2] & _BV(SI446X_CRC_ERROR_PEND))
+	if(interrupts[2] & (1<<SI446X_CRC_ERROR_PEND))
 	{
 #if IDLE_STATE == SI446X_STATE_READY
 		if(getState() == SI446X_STATE_SPI_ACTIVE)
@@ -1005,13 +1005,13 @@ ISR(INT_VECTOR)
 	}
 
 	// Packet sent
-	if(interrupts[2] & _BV(SI446X_PACKET_SENT_PEND))
+	if(interrupts[2] & (1<<SI446X_PACKET_SENT_PEND))
 		SI446X_CB_SENT();
 
-	if(interrupts[6] & _BV(SI446X_LOW_BATT_PEND))
+	if(interrupts[6] & (1<<SI446X_LOW_BATT_PEND))
 		SI446X_CB_LOWBATT();
 
-	if(interrupts[6] & _BV(SI446X_WUT_PEND))
+	if(interrupts[6] & (1<<SI446X_WUT_PEND))
 		SI446X_CB_WUT();
 
 #if defined(ARDUINO) && (SI446X_INTERRUPTS == 1 || SI446X_INT_SPI_COMMS == 1)

@@ -15,7 +15,7 @@ Various configs
 | Crystal frequency   | 30 MHz        | 30 MHz           | 30 MHz               | 30 MHz           |
 
 
-Use radio_config.pl (or radio_config.exe if you're one Windows without a Perl install) to process the header files that WDS generated so the library can use them.
+Use radio_config.pl (or radio_config.exe if you're on Windows without a Perl install) to process the header files that WDS generated so the library can use them.
 
 `perl radio_config.pl radio_config_Si4463.h` will take radio_config_Si4463.h, process it, and output radio_config.h
 
