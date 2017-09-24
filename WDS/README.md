@@ -7,7 +7,7 @@ Various configs
 | Data rate           | 100 Kbps      | 4.8 Kbps         | 4.8 Kbps             | 0.5 Kbps             | 1000 Kbps **     |
 | Deviation           | 50 KHz        | 2.4 KHz          | -                    | 1 KHz                | 60 KHz           |
 | RX Bandwidth        | 150 KHz       | 8 KHz            | 40 KHz               | 8 KHz                | 700 KHz          |
-| Tested range        | -             | -                | -                    | 1.83 km *            | -                |
+| Tested range *      | 2.11 km       | 2.19 km          | 2.12 km              | 2.2 km               | 1.6 km           |
 
 
 Common for all configs:
@@ -28,6 +28,6 @@ Use radio_config.pl (or radio_config.exe if you're on Windows without a Perl ins
 
 On Windows the .h files can be dragged on top of radio_config.exe which will then output a processed radio_config.h
 
-\* The range of the config_longrange_500 config was tested by driving around a fairly flat village/country area, the longest distance a valid packet was received at was 1.83 km (1.14 miles) and 2.02 km (1.26 miles) for an invalid packet.
+\* Range testing was done by sticking the transmitting antenna out of my bedroom window and then driving around a fairly flat village/country area with the receiver antenna on top of my car.
 
 ** When using 4FSK or 4GFSK the data rate is double the sample rate. When opening config_highspeed.xml in WDS it will show 500 ksps which is 1000 kbps.
