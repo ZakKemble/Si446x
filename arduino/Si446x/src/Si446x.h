@@ -334,7 +334,7 @@ void Si446x_read(void* buff, uint8_t len);
 * @brief Transmit a packet
 *
 * @param [packet] Pointer to packet data
-* @param [len] Number of bytes to transmit, maximum of ::SI446X_MAX_PACKET_LEN
+* @param [len] Number of bytes to transmit, maximum of ::SI446X_MAX_PACKET_LEN If configured for fixed length packets then this parameter is ignored and the length is set by ::SI446X_FIXED_LENGTH in Si446x_config.h
 * @param [channel] Channel to transmit data on (0 - 255)
 * @param [onTxFinish] What state to enter when the packet has finished transmitting. Usually ::SI446X_STATE_SLEEP or ::SI446X_STATE_RX
 * @return 0 on failure (already transmitting), 1 on success (has begun transmitting)

@@ -766,6 +766,11 @@ uint8_t Si446x_TX(void* packet, uint8_t len, uint8_t channel, si446x_state_t onT
 {
 	// TODO what happens if len is 0?
 
+#if SI446X_FIXED_LENGTH
+	// Stop the unused parameter warning
+	((void)(len));
+#endif
+
 	SI446X_NO_INTERRUPT()
 	{
 		if(getState() == SI446X_STATE_TX) // Already transmitting
@@ -783,14 +788,21 @@ uint8_t Si446x_TX(void* packet, uint8_t len, uint8_t channel, si446x_state_t onT
 			CHIPSELECT()
 			{
 				spi_transfer_nr(SI446X_CMD_WRITE_TX_FIFO);
+#if !SI446X_FIXED_LENGTH
 				spi_transfer_nr(len);
 				for(uint8_t i=0;i<len;i++)
 					spi_transfer_nr(((uint8_t*)packet)[i]);
+#else
+				for(uint8_t i=0;i<SI446X_FIXED_LENGTH;i++)
+					spi_transfer_nr(((uint8_t*)packet)[i]);
+#endif
 			}
 		}
 
+#if !SI446X_FIXED_LENGTH
 		// Set packet length
 		setProperty(SI446X_PKT_FIELD_2_LENGTH_LOW, len);
+#endif
 
 		// Begin transmit
 		uint8_t data[] = {
@@ -798,14 +810,16 @@ uint8_t Si446x_TX(void* packet, uint8_t len, uint8_t channel, si446x_state_t onT
 			channel,
 			(uint8_t)(onTxFinish<<4),
 			0,
-			0,
+			SI446X_FIXED_LENGTH,
 			0,
 			0
 		};
 		doAPI(data, sizeof(data), NULL, 0);
 
+#if !SI446X_FIXED_LENGTH
 		// Reset packet length back to max for receive mode
 		setProperty(SI446X_PKT_FIELD_2_LENGTH_LOW, MAX_PACKET_LEN);
+#endif
 	}
 	return 1;
 }
@@ -828,7 +842,7 @@ void Si446x_RX(uint8_t channel)
 			channel,
 			0,
 			0,
-			0,
+			SI446X_FIXED_LENGTH,
 			SI446X_STATE_NOCHANGE, // RX Timeout
 			IDLE_STATE, // RX Valid
 			SI446X_STATE_SLEEP // IDLE_STATE // RX Invalid (using SI446X_STATE_SLEEP for the INVALID_SYNC fix)
@@ -987,8 +1001,12 @@ ISR(INT_VECTOR)
 	// Valid packet
 	if(interrupts[2] & (1<<SI446X_PACKET_RX_PEND))
 	{
+#if !SI446X_FIXED_LENGTH
 		uint8_t len = 0;
 		Si446x_read(&len, 1);
+#else
+		uint8_t len = SI446X_FIXED_LENGTH;
+#endif
 		SI446X_CB_RXCOMPLETE(len, getLatchedRSSI());
 	}
 

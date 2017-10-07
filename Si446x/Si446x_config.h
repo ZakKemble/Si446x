@@ -39,6 +39,11 @@
 //	Current consumption: 1.8mA
 #define SI446X_IDLE_MODE SI446X_STATE_READY
 
+// To use variable length packets set this to 0
+// Otherwise for fixed length packets this should be set to the length. The len parameter in Si446x_TX() will then be ignored.
+// Using fixed length packets will stop the length field from being transmitted, reducing the transmission by 3 bytes.
+#define SI446X_FIXED_LENGTH 0
+
 
 ///////////////////
 // Pin stuff
