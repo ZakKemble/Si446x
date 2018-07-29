@@ -6,12 +6,12 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-si446x_gpio_mode_t	KEYWORD1	si446x_gpio_mode_t
-si446x_nirq_mode_t	KEYWORD1	si446x_nirq_mode_t
-si446x_sdo_mode_t	KEYWORD1	si446x_sdo_mode_t
-si446x_info_t	KEYWORD1	si446x_info_t
-si446x_gpio_t	KEYWORD1	si446x_gpio_t
-si446x_state_t	KEYWORD1	si446x_state_t
+si446x_gpio_mode_t	KEYWORD1
+si446x_nirq_mode_t	KEYWORD1
+si446x_sdo_mode_t	KEYWORD1
+si446x_info_t	KEYWORD1
+si446x_gpio_t	KEYWORD1
+si446x_state_t	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
