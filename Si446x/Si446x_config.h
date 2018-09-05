@@ -118,4 +118,21 @@
 	#define SI446X_BIT_EXTERNAL_INT SI446X_INTCONCAT(SI446X_INTERRUPT_NUM)
 #endif
 
+
+
+// NOT PROPERLY TESTED, KEEP 1
+// what happens if:
+// 1. Si446x_SERVICE()
+// 2. *new packet RX after service()*
+// 3. Si446x_TX(blah)
+// RX packet is lost, what are the interrupt pending statuses at?
+//
+// Use pin interrupt
+// If this is 1 and you have other devices that use the SPI bus then you will need to wrap areas of code that communicate with those devices with SI446X_NO_INTERRUPT()
+// If this is 0 make sure to call Si446x_SERVICE() as often as possible so that the library can process radio events
+// 0 = Off, run callbacks from Si446x_SERVICE()
+// 1 = On, run callbacks from interrupt
+#define SI446X_INTERRUPTS 1 // DO NOT CHANGE
+
+
 #endif /* SI443X_CONFIG_H_ */
