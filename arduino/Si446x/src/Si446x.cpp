@@ -107,7 +107,7 @@ static inline uint8_t interrupt_off(void)
 	if(!isrBusy)
 	{
 		noInterrupts();
-		isrState=isrState+1;
+		isrState = isrState + 1;
 	}
 	return 1;
 }
@@ -117,7 +117,7 @@ static inline uint8_t interrupt_on(void)
 	if(!isrBusy)
 	{
 		if(isrState > 0)
-			isrState=isrState-1;
+			isrState = isrState - 1;
 		if(isrState == 0)
 			interrupts();
 	}
@@ -166,7 +166,7 @@ uint8_t Si446x_irq_off()
 
 #ifdef ARDUINO
 	detachInterrupt(digitalPinToInterrupt(SI446X_IRQ));
-	isrState_local=isrState_local+1;
+	isrState_local = isrState_local + 1;
 	return 0;
 #else
 	uint8_t origVal = SI446X_REG_EXTERNAL_INT;
@@ -188,7 +188,7 @@ void Si446x_irq_on(uint8_t origVal)
 #ifdef ARDUINO
 	((void)(origVal));
 	if(isrState_local > 0)
-		isrState_local=isrState_local-1;
+		isrState_local = isrState_local - 1;
 	if(isrState_local == 0)
 		attachInterrupt(digitalPinToInterrupt(SI446X_IRQ), Si446x_SERVICE, FALLING);
 #else
